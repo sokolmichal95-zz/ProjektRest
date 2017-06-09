@@ -1,0 +1,353 @@
+swagger: '2.0'
+info:
+  version: 0.0.1
+  title: Musicstore Api
+  description: Api for a music store
+  contact:
+    name: Michał Sokół
+    email: sokol.michal95@live.com
+  license:
+    name: Apache-2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0'
+schemes:
+  - https
+host: 'localhost:8080'
+basePath: /api
+produces:
+  - application/json
+securityDefinitions:
+  UserSecurity:
+    type: basic
+  AdminSecurity:
+    type: basic
+security:
+  - UserSecurity: []
+paths:
+  /users:
+    parameters:
+      - $ref: '#/parameters/userAgent'
+    get:
+      summary: Get store users
+      description: Returns a list containing all users
+      parameters:
+        - $ref: '#/parameters/pageSize'
+        - $ref: '#/parameters/pageNumber'
+      responses:
+        '200':
+          description: A list of users
+          schema:
+            $ref: '#/definitions/Users'
+        '500':
+          $ref: '#/responses/Standard500ErrorResponse'
+    post:
+      summary: Adds new user
+      description: Adds user to users list
+      security:
+        - AdminSecurity: []
+      parameters:
+        - name: user
+          in: body
+          description: User to create.
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '204':
+          description: Created
+        '400':
+          $ref: '#/responses/UserDoesNotExistResponse'
+        '500':
+          $ref: '#/responses/Standard500ErrorResponse'
+  '/users/{id}':
+    parameters:
+      - $ref: '#/parameters/id'
+    get:
+      summary: Gets specified user
+      description: Returns a single user for its username
+      responses:
+        '200':
+          description: User
+          schema:
+            $ref: '#/definitions/User'
+        '404':
+          $ref: '#/responses/UserDoesNotExistResponse'
+        '500':
+          $ref: '#/responses/Standard500ErrorResponse'
+    delete:
+      summary: Deletes user
+      description: Deletes user
+      security:
+        - AdminSecurity: []
+      responses:
+        '204':
+          description: Successfully deleted
+        '404':
+          $ref: '#/responses/UserDoesNotExistResponse'
+        '500':
+          $ref: '#/responses/Standard500ErrorResponse'
+  /albums:
+    get:
+      summary: Gets all albums in the store
+      description: Returns a list of albums available in the store
+      parameters:
+        - $ref: '#/parameters/pageSize'
+        - $ref: '#/parameters/pageNumber'
+      responses:
+        '200':
+          description: List returned
+          schema:
+            $ref: '#/definitions/Albums'
+        '500':
+          $ref: '#/responses/Standard500ErrorResponse'
+    post:
+      summary: Add new album
+      description: Add new album
+      security:
+        - AdminSecurity: []
+      parameters:
+        - name: album
+          in: body
+          description: Album to create.
+          schema:
+            $ref: '#/definitions/Album'
+      responses:
+        '204':
+          description: Album added
+        '400':
+          $ref: '#/responses/UserDoesNotExistResponse'
+        '500':
+          $ref: '#/responses/Standard500ErrorResponse'
+  '/albums/{id}':
+    parameters:
+      - $ref: '#/parameters/id'
+    get:
+      summary: Gets specified album
+      description: Gets specified album
+      responses:
+        '200':
+          description: Album found
+          schema:
+            $ref: '#/definitions/Album'
+        '404':
+          $ref: '#/responses/UserDoesNotExistResponse'
+        '500':
+          $ref: '#/responses/Standard500ErrorResponse'
+    delete:
+      summary: Deletes album
+      description: Deletes album
+      security:
+        - AdminSecurity: []
+      responses:
+        '204':
+          description: Album deleted
+        '404':
+          $ref: '#/responses/UserDoesNotExistResponse'
+        '500':
+          $ref: '#/responses/Standard500ErrorResponse'
+    put:
+      summary: Update album info
+      description: Update album info
+      security:
+        - AdminSecurity: []
+      responses:
+        '200':
+          description: Updated
+          schema:
+            $ref: '#/definitions/Album'
+        '400':
+          $ref: '#/responses/UserDoesNotExistResponse'
+        '500':
+          $ref: '#/responses/Standard500ErrorResponse'
+  /instruments:
+    get:
+      x-swagger-router-controller: InstrumentResource
+      operationId: getInstruments
+      summary: Get all instruments
+      description: Returns list of all instruments in store
+      parameters:
+        - $ref: '#/parameters/pageSize'
+        - $ref: '#/parameters/pageNumber'
+      responses:
+        '200':
+          description: List returned
+          schema:
+            $ref: '#/definitions/Instruments'
+        '500':
+          $ref: '#/responses/Standard500ErrorResponse'
+    post:
+      x-swagger-router-controller: InstrumentResource
+      operationId: addInstrument
+      summary: Add instrument
+      description: Adds an instrument to list
+      security:
+        - AdminSecurity: []
+      parameters:
+        - name: instrument
+          in: body
+          description: Instrument to create.
+          schema:
+            $ref: '#/definitions/Instrument'
+      responses:
+        '204':
+          description: Instrument added
+        '400':
+          $ref: '#/responses/UserDoesNotExistResponse'
+        '500':
+          $ref: '#/responses/Standard500ErrorResponse'
+  '/instruments/{id}':
+    parameters:
+      - $ref: '#/parameters/id'
+    get:
+      x-swagger-router-controller: InstrumentResource
+      operationId: addInstrumentByName
+      summary: Gets specified instrument
+      description: Gets specified instrument
+      responses:
+        '200':
+          description: Instrument found.
+          schema:
+            $ref: '#/definitions/Instrument'
+        '404':
+          $ref: '#/responses/UserDoesNotExistResponse'
+        '500':
+          $ref: '#/responses/Standard500ErrorResponse'
+    delete:
+      x-swagger-router-controller: InstrumentResource
+      operationId: deleteInstrument
+      summary: Deletes specified instrument
+      description: Deletes specified instrument
+      security:
+        - AdminSecurity: []
+      responses:
+        '204':
+          description: Instrument deleted.
+        '404':
+          $ref: '#/responses/UserDoesNotExistResponse'
+        '500':
+          $ref: '#/responses/Standard500ErrorResponse'
+    put:
+      summary: Update instrument info
+      description: Update instrument info
+      security:
+        - AdminSecurity: []
+      responses:
+        '200':
+          description: Updated
+          schema:
+            $ref: '#/definitions/Instrument'
+        '400':
+          $ref: '#/responses/UserDoesNotExistResponse'
+        '500':
+          $ref: '#/responses/Standard500ErrorResponse'
+definitions:
+  User:
+    required:
+      - username
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      username:
+        type: string
+        pattern: '([A-Z+a-z+0-9]{8,64})'
+        minLength: 8
+        maxLength: 64
+      dateOfBirth:
+        type: string
+        format: date
+      password:
+        type: string
+        pattern: '([A-Z+a-z+0-9]{8,64})'
+  Users:
+    type: array
+    items:
+      $ref: '#/definitions/User'
+  Song:
+    required:
+      - title
+    properties:
+      title:
+        type: string
+      duration:
+        type: string
+  Album:
+    required:
+      - title
+      - artist
+      - price
+    properties:
+      title:
+        type: string
+      artist:
+        type: string
+      genre:
+        type: string
+      price:
+        type: number
+      label:
+        type: string
+      released:
+        type: string
+        format: date
+      songs:
+        type: array
+        items:
+          $ref: '#/definitions/Song'
+  Albums:
+    type: array
+    items:
+      $ref: '#/definitions/Album'
+  Instrument:
+    required:
+      - name
+      - price
+    properties:
+      name:
+        type: string
+      group:
+        type: string
+        enum:
+          - Strunowe
+          - Dęte blaszane
+          - Dęte drewniane
+          - Perkusyjne
+      price:
+        type: number
+      maker:
+        type: string
+  Instruments:
+    type: array
+    items:
+      $ref: '#/definitions/Instrument'
+  Error:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+responses:
+  Standard500ErrorResponse:
+    description: An unexpected error occured.
+    schema:
+      $ref: '#/definitions/Error'
+  UserDoesNotExistResponse:
+    description: User does not exist.
+parameters:
+  userAgent:
+    name: User-Agent
+    type: string
+    in: header
+    required: true
+  id:
+    name: id
+    in: path
+    required: true
+    type: integer
+  pageSize:
+    name: pageSize
+    in: query
+    type: integer
+  pageNumber:
+    name: pageNumber
+    in: query
+    type: integer
