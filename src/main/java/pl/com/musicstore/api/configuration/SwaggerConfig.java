@@ -1,3 +1,4 @@
+/*
 package pl.com.musicstore.api.configuration;
 
 import com.google.common.base.Predicate;
@@ -26,3 +27,4 @@ public class SwaggerConfig {
         return not(regex("/error.*"));
     }
 }
+*/

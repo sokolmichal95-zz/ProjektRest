@@ -2,12 +2,14 @@ package pl.com.musicstore.api.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Album {
+@Table
+public class Album implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

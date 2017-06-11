@@ -2,6 +2,7 @@ package pl.com.musicstore.api.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 enum Group {
     STRINGS("strunowe"),
@@ -15,7 +16,8 @@ enum Group {
 }
 
 @Entity
-public class Instrument {
+@Table
+public class Instrument implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

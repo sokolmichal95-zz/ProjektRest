@@ -2,10 +2,12 @@ package pl.com.musicstore.api.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.sql.Time;
 
 @Entity
-public class Song {
+@Table
+public class Song  implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
