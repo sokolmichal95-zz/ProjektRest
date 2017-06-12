@@ -1,3 +1,4 @@
+/*
 package pl.com.musicstore.api.models;
 
 import javax.persistence.*;
@@ -5,13 +6,8 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Time;
 
-@Entity
-@Table
-public class Song  implements Serializable{
+public class Song{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @NotNull
     private long id;
     private String title;
     private String artist;
@@ -50,3 +46,4 @@ public class Song  implements Serializable{
     }
 }
 
+*/
