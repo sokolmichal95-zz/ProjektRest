@@ -7,7 +7,7 @@ import pl.com.musicstore.api.database.Database;
 import pl.com.musicstore.api.database.PostgresqlDB;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/users")
 @Component
 public class UserResourceImpl extends UserResource {
 

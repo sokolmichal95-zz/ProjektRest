@@ -26,7 +26,7 @@ public class PostgresqlDB implements Database {
 
     public static EntityManager getEntityManager() {
         if (entityManager == null) {
-            String dbUrl = "jdbc:postgresql://" + HOST + ':' + PORT + "/" + DATABASE;
+            String dbUrl = "jdbc:postgresql://" + HOST + ':' + PORT + "/" + DATABASE + "?ssl=true";
 
             Map<String, String> properties = new HashMap<String, String>();
 

@@ -1,6 +1,7 @@
 package pl.com.musicstore.api.configuration;
 
 import com.google.common.base.Predicate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.spi.DocumentationType;
@@ -11,7 +12,7 @@ import static com.google.common.base.Predicates.*;
 
 @Configuration
 public class SwaggerConfiguration {
-    @Bean
+    @Autowired
     public Docket swaggerSpringMvcPlugin() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .groupName("restapi-storage")
