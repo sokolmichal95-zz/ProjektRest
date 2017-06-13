@@ -15,7 +15,7 @@ public class InstrumentEntity {
     private static final Logger LOGGER = LoggerFactory.getLogger(InstrumentEntity.class);
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "name")

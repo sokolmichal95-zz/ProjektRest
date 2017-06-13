@@ -17,7 +17,7 @@ public class AlbumEntity {
     private static final Logger LOGGER = LoggerFactory.getLogger(AlbumEntity.class);
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "title")
