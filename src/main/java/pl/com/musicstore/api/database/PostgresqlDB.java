@@ -70,7 +70,7 @@ public class PostgresqlDB implements Database {
             getEntityManager().getTransaction().begin();
 
             // Operations that modify the database should come here.
-            getEntityManager().persist(user);
+            getEntityManager().persist(entity);
 
             getEntityManager().getTransaction().commit();
         } finally {

@@ -1,6 +1,4 @@
 package pl.com.musicstore.api.models;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 public class User {
     private String id;
