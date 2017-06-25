@@ -30,6 +30,15 @@ public class Album {
         this.released = released;
     }
 
+    public Album(String title, String artist, String genre, Double price, String label, Date released) {
+        this.title = title;
+        this.artist = artist;
+        this.genre = genre;
+        this.price = price;
+        this.label = label;
+        this.released = released;
+    }
+
     public String getId() {
         return id;
     }

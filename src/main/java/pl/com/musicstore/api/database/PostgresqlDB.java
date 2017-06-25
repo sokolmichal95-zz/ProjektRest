@@ -76,15 +76,10 @@ public class PostgresqlDB implements Database {
     @Override
     public User createUser(User user) {
         UserEntity entity = buildUserEntity(user);
-        LOGGER.info("CREATEUSER: BEFORE TRY");
         try {
             getEntityManager().getTransaction().begin();
-            LOGGER.info("CREATEUSER: AFTER getEntityManager().getTransaction().begin()");
-            // Operations that modify the database should come here.
             getEntityManager().persist(entity);
-            LOGGER.info("CREATEUSER: AFTER getEntityManager().persist(entity)");
             getEntityManager().getTransaction().commit();
-            LOGGER.info("CREATEUSER: AFTER commit()");
         } catch (Exception e) {
             LOGGER.info("ERROR in PostgreSqlDB: " + e.getMessage());
         } finally {
@@ -96,8 +91,35 @@ public class PostgresqlDB implements Database {
     }
 
     @Override
-    public User updateUser(User dbUser) {
-        return null;
+    public User updateUser(User dbUser, String id) {
+        UserEntity entity = getEntityManager().find(UserEntity.class, new Long(id));
+        try {
+            getEntityManager().getTransaction().begin();
+            entity.setName(dbUser.getName());
+            entity.setPass(dbUser.getPass());
+            entity.setEmail(dbUser.getEmail());
+            getEntityManager().getTransaction().commit();
+        } catch (Exception e) {
+            LOGGER.info("ERROR in PostgreSqlDB: " + e.getMessage());
+        }
+        return new User(String.valueOf(entity.getId()), entity.getName(), entity.getPass(), entity.getEmail());
+    }
+
+    @Override
+    public Long deleteUser(String id) {
+        UserEntity entity;
+        try {
+            getEntityManager().getTransaction().begin();
+            if ((entity = getEntityManager().find(UserEntity.class, new Long(id))) != null) {
+                getEntityManager().remove(entity);
+                getEntityManager().getTransaction().commit();
+                return entity.getId();
+            }
+            return null;
+        } catch (Exception e) {
+            LOGGER.info("ERROR in PostgreSqlDB: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override
@@ -139,19 +161,46 @@ public class PostgresqlDB implements Database {
         AlbumEntity entity = buildAlbumEntity(album);
         try {
             getEntityManager().getTransaction().begin();
-
-            // Operations that modify the database should come here.
             getEntityManager().persist(album);
-
             getEntityManager().getTransaction().commit();
         } finally {
             if (getEntityManager().getTransaction().isActive()) {
                 getEntityManager().getTransaction().rollback();
             }
         }
-
         return new Album(String.valueOf(entity.getId()), entity.getTitle(), entity.getArtist(),
                 entity.getGenre(), entity.getPrice(), entity.getLabel(), entity.getReleased());
+    }
+
+    @Override
+    public Album updateAlbum(Album album, String id) {
+        AlbumEntity entity = getEntityManager().find(UserEntity.class, new Long(id));
+        try {
+            getEntityManager().getTransaction().begin();
+            // dorobić settery dla albumu i instrumentu, dokończyć tutaj i resources
+            // zaktualizować swaggera
+            getEntityManager().getTransaction().commit();
+        } catch (Exception e) {
+            LOGGER.info("ERROR in PostgreSqlDB: " + e.getMessage());
+        }
+        return new Album(String.valueOf(entity.getId()), entity.getName(), entity.getPass(), entity.getEmail());
+    }
+
+    @Override
+    public Long deleteAlbum(String id) {
+        AlbumEntity entity;
+        try {
+            getEntityManager().getTransaction().begin();
+            if ((entity = getEntityManager().find(AlbumEntity.class, new Long(id))) != null) {
+                getEntityManager().remove(entity);
+                getEntityManager().getTransaction().commit();
+                return entity.getId();
+            }
+            return null;
+        } catch (Exception e) {
+            LOGGER.info("ERROR in PostgreSqlDB: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override
@@ -169,7 +218,6 @@ public class PostgresqlDB implements Database {
                 list.add(buildAlbumResponse(album));
             }
         }
-
         return list;
     }
 
@@ -193,18 +241,46 @@ public class PostgresqlDB implements Database {
         InstrumentEntity entity = buildInstrumentEntity(Instrument);
         try {
             getEntityManager().getTransaction().begin();
-
-            // Operations that modify the database should come here.
             getEntityManager().persist(Instrument);
-
             getEntityManager().getTransaction().commit();
         } finally {
             if (getEntityManager().getTransaction().isActive()) {
                 getEntityManager().getTransaction().rollback();
             }
         }
-
         return new Instrument(String.valueOf(entity.getId()), entity.getName(), entity.getPrice(), entity.getMaker());
+    }
+
+    @Override
+    public Instrument updateInstrument(Instrument instrument, String id) {
+        UserEntity entity = getEntityManager().find(UserEntity.class, new Long(id));
+        try {
+            getEntityManager().getTransaction().begin();
+            entity.setName(dbUser.getName());
+            entity.setPass(dbUser.getPass());
+            entity.setEmail(dbUser.getEmail());
+            getEntityManager().getTransaction().commit();
+        } catch (Exception e) {
+            LOGGER.info("ERROR in PostgreSqlDB: " + e.getMessage());
+        }
+        return new User(String.valueOf(entity.getId()), entity.getName(), entity.getPass(), entity.getEmail());
+    }
+
+    @Override
+    public Long deleteInstrument(String id) {
+        UserEntity entity;
+        try {
+            getEntityManager().getTransaction().begin();
+            if ((entity = getEntityManager().find(UserEntity.class, new Long(id))) != null) {
+                getEntityManager().remove(entity);
+                getEntityManager().getTransaction().commit();
+                return entity.getId();
+            }
+            return null;
+        } catch (Exception e) {
+            LOGGER.info("ERROR in PostgreSqlDB: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override

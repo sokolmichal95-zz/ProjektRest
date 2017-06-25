@@ -36,9 +36,8 @@ public abstract class AlbumResource {
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity createUSer(@RequestBody Album album, HttpServletRequest request) {
+    public ResponseEntity createUser(@RequestBody Album album, HttpServletRequest request) {
         Album dbAlbum = new Album(
-                "",
                 album.getTitle(),
                 album.getArtist(),
                 album.getGenre(),

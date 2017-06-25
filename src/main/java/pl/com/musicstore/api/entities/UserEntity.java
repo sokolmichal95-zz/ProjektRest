@@ -69,6 +69,18 @@ public class UserEntity {
         return email;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
