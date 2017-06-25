@@ -23,18 +23,14 @@ import javax.persistence.Table;
 public class UserEntity {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserEntity.class);
 
-    // auto-generated
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true, nullable = false, name = "id")
+    Long id = Long.valueOf(1);
 
-    //fields can be renamed
-    //@Column(name = "first")
     @Column(name = "name")
     private String name;
 
-    //fields can be renamed
-    //@Column(name = "last")
     @Column(name = "pass")
     private String pass;
 
@@ -54,6 +50,7 @@ public class UserEntity {
         this.name = name;
         this.pass = pass;
         this.email = email;
+        LOGGER.info("Created new UserEntity: " + this.toString());
     }
 
     public Long getId() {
@@ -75,6 +72,7 @@ public class UserEntity {
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
+                .add("id", id)
                 .add("name", name)
                 .add("pass", pass)
                 .add("email", email)

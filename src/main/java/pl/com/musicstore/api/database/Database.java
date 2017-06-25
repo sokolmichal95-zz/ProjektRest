@@ -9,6 +9,7 @@ import java.util.Collection;
 public interface Database {
     User getUser(String id);
     User createUser(User user);
+    User updateUser(User dbUser);
     Collection<User> getUsers();
 
     Album getAlbum(String id);

@@ -3,6 +3,9 @@ package pl.com.musicstore.api.database;
 import javax.persistence.Query;
 
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import pl.com.musicstore.api.entities.AlbumEntity;
 import pl.com.musicstore.api.entities.InstrumentEntity;
 import pl.com.musicstore.api.entities.UserEntity;
@@ -21,12 +24,16 @@ public class PostgresqlDB implements Database {
     private static final String DATABASE = "d75e0nthb7a5a7";
     private static final String USER_NAME = "amzwkizrcvmxzk";
     private static final String PASSWORD = "d6090b0f3f31ef4b42e348b4902aacb1d4037477b0f8777095d0fd9eb31e3bfa";
+    private static final String SSL = "?sslmode=require";
 
-    private static EntityManager entityManager;
+    @Autowired
+    protected static EntityManager entityManager;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostgresqlDB.class);
 
     public static EntityManager getEntityManager() {
         if (entityManager == null) {
-            String dbUrl = "jdbc:postgresql://" + HOST + ':' + PORT + "/" + DATABASE + "?ssl=true";
+            String dbUrl = "jdbc:postgresql://" + HOST + ':' + PORT + "/" + DATABASE + SSL;
 
             Map<String, String> properties = new HashMap<String, String>();
 
@@ -42,7 +49,10 @@ public class PostgresqlDB implements Database {
             properties.put("hibernate.hbm2ddl.auto", "update"); //update schema for entities (create tables if not exists)
 
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("myUnit", properties);
-            entityManager = emf.createEntityManager();
+            entityManager = emf.createEntityManager(properties);
+            if (entityManager != null) {
+                LOGGER.info("Created entityManager");
+            }
         }
 
         return entityManager;
@@ -66,20 +76,28 @@ public class PostgresqlDB implements Database {
     @Override
     public User createUser(User user) {
         UserEntity entity = buildUserEntity(user);
+        LOGGER.info("CREATEUSER: BEFORE TRY");
         try {
             getEntityManager().getTransaction().begin();
-
+            LOGGER.info("CREATEUSER: AFTER getEntityManager().getTransaction().begin()");
             // Operations that modify the database should come here.
             getEntityManager().persist(entity);
-
+            LOGGER.info("CREATEUSER: AFTER getEntityManager().persist(entity)");
             getEntityManager().getTransaction().commit();
+            LOGGER.info("CREATEUSER: AFTER commit()");
+        } catch (Exception e) {
+            LOGGER.info("ERROR in PostgreSqlDB: " + e.getMessage());
         } finally {
             if (getEntityManager().getTransaction().isActive()) {
                 getEntityManager().getTransaction().rollback();
             }
         }
-
         return new User(String.valueOf(entity.getId()), entity.getName(), entity.getPass(), entity.getEmail());
+    }
+
+    @Override
+    public User updateUser(User dbUser) {
+        return null;
     }
 
     @Override
@@ -235,7 +253,7 @@ public class PostgresqlDB implements Database {
     }
 
     private Instrument buildInstrumentResponse(InstrumentEntity entity) {
-        return new Instrument(entity.getId().toString(),entity.getName(),
+        return new Instrument(entity.getId().toString(), entity.getName(),
                 entity.getPrice(), entity.getMaker());
     }
 

@@ -1,6 +1,6 @@
 package pl.com.musicstore.api.resources;
 
-import io.swagger.models.Response;
+import org.apache.tomcat.jni.Time;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,8 +9,13 @@ import pl.com.musicstore.api.exceptions.UserException;
 import pl.com.musicstore.api.models.User;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import java.net.URI;
 import java.util.Collection;
+import java.util.Date;
+import java.util.Random;
+import java.util.Timer;
 
 @RestController
 public abstract class UserResource {
@@ -37,9 +42,8 @@ public abstract class UserResource {
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity createUSer(@RequestBody User user, HttpServletRequest request) {
+    public ResponseEntity createUser(@RequestBody User user, HttpServletRequest request) {
         User dbUser = new User(
-                "",
                 user.getName(),
                 user.getPass(),
                 user.getEmail()
@@ -47,6 +51,21 @@ public abstract class UserResource {
 
         User createdUser = getDatabase().createUser(dbUser);
 
-        return ResponseEntity.created(URI.create(request.getPathInfo()+"/"+createdUser.getId())).body(createdUser);
+        return ResponseEntity.created(URI.create(request.getPathInfo() + "/" + createdUser.getId())).body(createdUser);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Path("/users/{id}")
+    public ResponseEntity updateUser(@RequestBody User user, HttpServletRequest request, @PathParam("id") String id) {
+        User dbUser = new User(
+                id,
+                user.getName(),
+                user.getPass(),
+                user.getEmail()
+        );
+
+        User updatedUser = getDatabase().updateUser(dbUser);
+
+        return ResponseEntity.created(URI.create(request.getPathInfo() + "/" + updatedUser.getId())).body(updatedUser);
     }
 }
