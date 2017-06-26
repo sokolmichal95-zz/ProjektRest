@@ -1,11 +1,13 @@
 package pl.com.musicstore.api.resources;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.com.musicstore.api.database.Database;
 import pl.com.musicstore.api.exceptions.UserException;
 import pl.com.musicstore.api.models.Album;
+import pl.com.musicstore.api.models.User;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -21,7 +23,7 @@ public abstract class AlbumResource {
     }
 
     @RequestMapping(value = "/{albumId}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-    public Album getAlbum(@PathVariable("albumId") String albumId) throws Exception {
+    public ResponseEntity getAlbum(@PathVariable("albumId") String albumId) throws Exception {
         Album album = getDatabase().getAlbum(albumId);
 
         if (albumId.equals("db")) {
@@ -29,14 +31,14 @@ public abstract class AlbumResource {
         }
 
         if (album == null) {
-            throw new UserException("Album not found", "Nie odnaleziono albumu o id: " + albumId, "http://docu.pl/errors/user-not-found");
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
 
-        return album;
+        return new ResponseEntity(album, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity createUser(@RequestBody Album album, HttpServletRequest request) {
+    public ResponseEntity createAlbum(@RequestBody Album album) {
         Album dbAlbum = new Album(
                 album.getTitle(),
                 album.getArtist(),
@@ -48,7 +50,32 @@ public abstract class AlbumResource {
 
         Album createdAlbum = getDatabase().createAlbum(dbAlbum);
 
-        return ResponseEntity.created(URI.create(request.getPathInfo() + "/" + createdAlbum.getId())).body(createdAlbum);
+        return new ResponseEntity(createdAlbum, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity updateAlbum(@RequestBody Album album, @PathVariable("id") String id) {
+        Album dbAlbum = new Album(
+                id,
+                album.getTitle(),
+                album.getArtist(),
+                album.getGenre(),
+                album.getPrice(),
+                album.getLabel(),
+                album.getReleased()
+        );
+
+        Album updatedAlbum = getDatabase().updateAlbum(dbAlbum, id);
+
+        return new ResponseEntity(updatedAlbum, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteAlbum(@PathVariable("id") String id) {
+        if (getDatabase().deleteAlbum(id) != null) {
+            return new ResponseEntity(id, HttpStatus.OK);
+        }
+        else return new ResponseEntity(id, HttpStatus.NOT_FOUND);
     }
 }
 

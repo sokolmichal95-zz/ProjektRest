@@ -21,9 +21,7 @@ public interface Database {
 
     Instrument getInstrument(String id);
     Instrument createInstrument(Instrument instrument);
-
     Instrument updateInstrument(Instrument instrument, String id);
-
     Long deleteInstrument(String id);
     Collection<Instrument> getInstruments();
 }

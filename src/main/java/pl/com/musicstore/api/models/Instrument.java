@@ -29,6 +29,12 @@ public class Instrument {
         this.maker = maker;
     }
 
+    public Instrument(String name, Double price, String maker) {
+        this.name = name;
+        this.price = price;
+        this.maker = maker;
+    }
+
     public Instrument() {
     }
 

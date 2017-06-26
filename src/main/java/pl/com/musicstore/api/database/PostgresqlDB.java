@@ -60,7 +60,7 @@ public class PostgresqlDB implements Database {
 
     @Override
     public User getUser(String sid) {
-        Long id = null;
+        Long id;
         try {
             id = Long.valueOf(sid);
         } catch (NumberFormatException e) {
@@ -143,7 +143,7 @@ public class PostgresqlDB implements Database {
 
     @Override
     public Album getAlbum(String sid) {
-        Long id = null;
+        Long id;
         try {
             id = Long.valueOf(sid);
         } catch (NumberFormatException e) {
@@ -161,7 +161,7 @@ public class PostgresqlDB implements Database {
         AlbumEntity entity = buildAlbumEntity(album);
         try {
             getEntityManager().getTransaction().begin();
-            getEntityManager().persist(album);
+            getEntityManager().persist(entity);
             getEntityManager().getTransaction().commit();
         } finally {
             if (getEntityManager().getTransaction().isActive()) {
@@ -174,16 +174,21 @@ public class PostgresqlDB implements Database {
 
     @Override
     public Album updateAlbum(Album album, String id) {
-        AlbumEntity entity = getEntityManager().find(UserEntity.class, new Long(id));
+        AlbumEntity entity = getEntityManager().find(AlbumEntity.class, new Long(id));
         try {
             getEntityManager().getTransaction().begin();
-            // dorobić settery dla albumu i instrumentu, dokończyć tutaj i resources
-            // zaktualizować swaggera
+            entity.setArtist(album.getArtist());
+            entity.setGenre(album.getGenre());
+            entity.setLabel(album.getLabel());
+            entity.setPrice(album.getPrice());
+            entity.setReleased(album.getReleased());
+            entity.setTitle(album.getTitle());
             getEntityManager().getTransaction().commit();
         } catch (Exception e) {
             LOGGER.info("ERROR in PostgreSqlDB: " + e.getMessage());
         }
-        return new Album(String.valueOf(entity.getId()), entity.getName(), entity.getPass(), entity.getEmail());
+        return new Album(String.valueOf(entity.getId()), entity.getTitle(),
+                entity.getArtist(), entity.getGenre(), entity.getPrice(), entity.getLabel(), entity.getReleased());
     }
 
     @Override
@@ -237,11 +242,11 @@ public class PostgresqlDB implements Database {
     }
 
     @Override
-    public Instrument createInstrument(Instrument Instrument) {
-        InstrumentEntity entity = buildInstrumentEntity(Instrument);
+    public Instrument createInstrument(Instrument instrument) {
+        InstrumentEntity entity = buildInstrumentEntity(instrument);
         try {
             getEntityManager().getTransaction().begin();
-            getEntityManager().persist(Instrument);
+            getEntityManager().persist(entity);
             getEntityManager().getTransaction().commit();
         } finally {
             if (getEntityManager().getTransaction().isActive()) {
@@ -253,25 +258,25 @@ public class PostgresqlDB implements Database {
 
     @Override
     public Instrument updateInstrument(Instrument instrument, String id) {
-        UserEntity entity = getEntityManager().find(UserEntity.class, new Long(id));
+        InstrumentEntity entity = getEntityManager().find(InstrumentEntity.class, new Long(id));
         try {
             getEntityManager().getTransaction().begin();
-            entity.setName(dbUser.getName());
-            entity.setPass(dbUser.getPass());
-            entity.setEmail(dbUser.getEmail());
+            entity.setName(instrument.getName());
+            entity.setPrice(instrument.getPrice());
+            entity.setMaker(instrument.getMaker());
             getEntityManager().getTransaction().commit();
         } catch (Exception e) {
             LOGGER.info("ERROR in PostgreSqlDB: " + e.getMessage());
         }
-        return new User(String.valueOf(entity.getId()), entity.getName(), entity.getPass(), entity.getEmail());
+        return new Instrument(String.valueOf(entity.getId()), entity.getName(), entity.getPrice(), entity.getMaker());
     }
 
     @Override
     public Long deleteInstrument(String id) {
-        UserEntity entity;
+        InstrumentEntity entity;
         try {
             getEntityManager().getTransaction().begin();
-            if ((entity = getEntityManager().find(UserEntity.class, new Long(id))) != null) {
+            if ((entity = getEntityManager().find(InstrumentEntity.class, new Long(id))) != null) {
                 getEntityManager().remove(entity);
                 getEntityManager().getTransaction().commit();
                 return entity.getId();

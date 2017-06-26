@@ -18,7 +18,9 @@ public class AlbumEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Column(unique = true, nullable = false, name = "id")
+//    Long id = Long.valueOf(1);
+    Long id;
 
     @Column(name = "title")
     private String title;
@@ -50,6 +52,7 @@ public class AlbumEntity {
         this.price = price;
         this.label = label;
         this.released = released;
+        LOGGER.info("Created new AlbumEntity: " + this.toString());
     }
 
     public AlbumEntity() {
@@ -81,6 +84,30 @@ public class AlbumEntity {
 
     public Date getReleased() {
         return released;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setReleased(Date released) {
+        this.released = released;
     }
 
     @Override

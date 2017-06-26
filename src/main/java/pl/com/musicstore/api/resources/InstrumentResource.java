@@ -1,11 +1,13 @@
 package pl.com.musicstore.api.resources;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.com.musicstore.api.database.Database;
 import pl.com.musicstore.api.exceptions.UserException;
 import pl.com.musicstore.api.models.Instrument;
+import pl.com.musicstore.api.models.User;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -21,7 +23,7 @@ public abstract class InstrumentResource {
     }
 
     @RequestMapping(value = "/{instrumentId}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-    public Instrument getInstrument(@PathVariable("instrumentId") String instrumentId) throws Exception {
+    public ResponseEntity getInstrument(@PathVariable("instrumentId") String instrumentId) throws Exception {
         Instrument instrument = getDatabase().getInstrument(instrumentId);
 
         if (instrumentId.equals("db")) {
@@ -29,16 +31,15 @@ public abstract class InstrumentResource {
         }
 
         if (instrument == null) {
-            throw new UserException("Instrument not found", "Nie odnaleziono użytkownika o id: " + instrumentId, "http://docu.pl/errors/user-not-found");
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
 
-        return instrument;
+        return new ResponseEntity(instrument, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity createUSer(@RequestBody Instrument instrument, HttpServletRequest request) {
+    public ResponseEntity createInstrument(@RequestBody Instrument instrument) {
         Instrument dbInstrument = new Instrument(
-                "",
                 instrument.getName(),
                 instrument.getPrice(),
                 instrument.getMaker()
@@ -46,7 +47,28 @@ public abstract class InstrumentResource {
 
         Instrument createdInstrument = getDatabase().createInstrument(dbInstrument);
 
-        return ResponseEntity.created(URI.create(request.getPathInfo()+"/"+createdInstrument.getId())).body(createdInstrument);
+        return new ResponseEntity(createdInstrument, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity updateInstrument(@RequestBody Instrument instrument, @PathVariable("id") String id) {
+        Instrument dbInstrument = new Instrument(
+                id,
+                instrument.getName(),
+                instrument.getPrice(),
+                instrument.getMaker()
+        );
+
+        Instrument updatedInstrument = getDatabase().updateInstrument(dbInstrument, id);
+
+        return new ResponseEntity(updatedInstrument, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteInstrument(@PathVariable("id") String id) {
+        if (getDatabase().deleteInstrument(id) != null) {
+            return new ResponseEntity(id, HttpStatus.OK);
+        } else return new ResponseEntity(id, HttpStatus.NOT_FOUND);
     }
 }
 

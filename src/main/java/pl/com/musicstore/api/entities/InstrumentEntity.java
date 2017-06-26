@@ -12,11 +12,13 @@ import javax.persistence.*;
         @NamedQuery(name = "instruments.findAll", query = "SELECT u FROM InstrumentEntity u")
 })
 public class InstrumentEntity {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(InstrumentEntity.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Column(unique = true, nullable = false, name = "id")
+    Long id;
 
     @Column(name = "name")
     private String name;
@@ -40,6 +42,7 @@ public class InstrumentEntity {
         this.name = name;
         this.price = price;
         this.maker = maker;
+        LOGGER.info("Created new InstrumentEntity: " + this.toString());
     }
 
     public Long getId() {
@@ -56,6 +59,18 @@ public class InstrumentEntity {
 
     public String getMaker() {
         return maker;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public void setMaker(String maker) {
+        this.maker = maker;
     }
 
     @Override

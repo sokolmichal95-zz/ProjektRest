@@ -1,6 +1,5 @@
 package pl.com.musicstore.api.entities;
 
-
 import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +20,13 @@ import javax.persistence.Table;
         @NamedQuery(name = "users.findAll", query = "SELECT u FROM UserEntity u")
 })
 public class UserEntity {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(UserEntity.class);
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique = true, nullable = false, name = "id")
-    Long id = Long.valueOf(1);
+    Long id;
 
     @Column(name = "name")
     private String name;

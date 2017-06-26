@@ -58,12 +58,13 @@ public abstract class UserResource {
 
         User updatedUser = getDatabase().updateUser(dbUser, id);
 
-        return new ResponseEntity(id, HttpStatus.OK);
+        return new ResponseEntity(updatedUser, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteUser(HttpServletRequest request, @PathVariable("id") String id){
-        getDatabase().deleteUser(id);
-        return new ResponseEntity(id, HttpStatus.OK);
+    public ResponseEntity deleteUser(@PathVariable("id") String id) {
+        if (getDatabase().deleteUser(id) != null) {
+            return new ResponseEntity(id, HttpStatus.OK);
+        }else return new ResponseEntity(id, HttpStatus.NOT_FOUND);
     }
 }
