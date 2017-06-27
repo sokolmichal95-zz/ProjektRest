@@ -70,7 +70,7 @@ public abstract class AlbumResource {
         return new ResponseEntity(updatedAlbum, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity deleteAlbum(@PathVariable("id") String id) {
         if (getDatabase().deleteAlbum(id) != null) {
             return new ResponseEntity(id, HttpStatus.OK);
